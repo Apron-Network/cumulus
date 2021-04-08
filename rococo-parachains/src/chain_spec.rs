@@ -62,8 +62,8 @@ where
 
 pub fn get_chain_spec(id: ParaId) -> ChainSpec {
 	ChainSpec::from_genesis(
-		"Local Testnet",
-		"local_testnet",
+		"Apron PC1",
+		"apron_pc1",
 		ChainType::Local,
 		move || {
 			testnet_genesis(
@@ -86,11 +86,14 @@ pub fn get_chain_spec(id: ParaId) -> ChainSpec {
 			)
 		},
 		vec![],
-		None,
-		None,
-		None,
+		Some(
+			TelemetryEndpoints::new(vec![(ROCOCO_STAGING_TELEMETRY_URL.to_string(), 0)])
+				.expect("Staging telemetry url is valid; qed"),
+		),
+		Some("apron"),
+		Some(prop),
 		Extensions {
-			relay_chain: "westend-dev".into(),
+			relay_chain: "rococo".into(),
 			para_id: id.into(),
 		},
 	)
