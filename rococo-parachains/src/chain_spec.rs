@@ -61,6 +61,10 @@ where
 }
 
 pub fn get_chain_spec(id: ParaId) -> ChainSpec {
+    use sc_telemetry::TelemetryEndpoints;
+    const ROCOCO_STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
+    let prop = sc_service::Properties::new();
+
 	ChainSpec::from_genesis(
 		"Apron PC1",
 		"apron_pc1",
