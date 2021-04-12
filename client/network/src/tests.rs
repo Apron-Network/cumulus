@@ -15,7 +15,7 @@
 // along with Polkadot.  If not, see <http://www.gnu.org/licenses/>.
 
 use super::*;
-use cumulus_test_service::runtime::{Block, Header};
+use cumulus_test_service::runtime::{Block, Header, Hash};
 use futures::{executor::block_on, poll, task::Poll};
 use polkadot_node_primitives::{SignedFullStatement, Statement};
 use polkadot_primitives::v1::{
@@ -173,6 +173,7 @@ fn invalid_if_no_data_exceeds_best_known_number() {
 	let mut validator = make_validator_and_api().0;
 	let header = Header {
 		number: 1,
+		state_root: Hash::random(),
 		..default_header()
 	};
 	let res = block_on(validator.validate(&header, &[]));
@@ -181,6 +182,18 @@ fn invalid_if_no_data_exceeds_best_known_number() {
 		res.unwrap(),
 		Validation::Failure { disconnect: false },
 		"validation fails if no justification and block number >= best known number",
+	);
+}
+
+#[test]
+fn valid_if_no_data_and_block_matches_best_known_block() {
+	let mut validator = make_validator_and_api().0;
+	let res = block_on(validator.validate(&default_header(), &[]));
+
+	assert_eq!(
+		res.unwrap(),
+		Validation::Success { is_new_best: true },
+		"validation is successful when the block hash matches the best known block",
 	);
 }
 
@@ -331,6 +344,24 @@ fn relay_parent_not_imported_when_block_announce_is_processed() {
 	});
 }
 
+/// Ensures that when we receive a block announcement without a statement included, while the block
+/// is not yet included by the node checking the announcement, but the node is already backed.
+#[test]
+fn block_announced_without_statement_and_block_only_backed() {
+	block_on(async move {
+		let mut validator = make_validator_and_api().0;
+
+		let header = default_header();
+
+		let validation = validator.validate(&header, &[]);
+
+		assert!(matches!(
+			validation.await,
+			Ok(Validation::Success { is_new_best: true })
+		));
+	});
+}
+
 #[derive(Default)]
 struct ApiData {
 	validators: Vec<ValidatorId>,
@@ -407,7 +438,13 @@ sp_api::mock_impl_runtime_apis! {
 		}
 
 		fn candidate_pending_availability(&self, _: ParaId) -> Option<CommittedCandidateReceipt<PHash>> {
-			None
+			Some(CommittedCandidateReceipt {
+				descriptor: CandidateDescriptor {
+					para_head: polkadot_parachain::primitives::HeadData(default_header().encode()).hash(),
+					..Default::default()
+				},
+				..Default::default()
+			})
 		}
 
 		fn candidate_events(&self) -> Vec<CandidateEvent<PHash>> {
