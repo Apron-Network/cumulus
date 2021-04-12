@@ -208,7 +208,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a3203e79f4dd9bdda415ed03cf14dae5a2bf775c683a00f94e9cd1faf0f596e5"
 dependencies = [
  "quote 1.0.9",
- "syn 1.0.68",
+ "syn 1.0.69",
 ]
 
 [[package]]
@@ -1704,7 +1704,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f0f83e699727abca3c56e187945f303389590305ab2f0185ea445aa66e8d5f2a"
 dependencies = [
  "data-encoding",
- "syn 1.0.68",
+ "syn 1.0.69",
 ]
 
 [[package]]
@@ -4494,18 +4494,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "nix"
-version = "0.20.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fa9b4819da1bc61c0ea48b63b7bc8604064dd43013e7cc325df098d49cd7c18a"
-dependencies = [
- "bitflags",
- "cc",
- "cfg-if 1.0.0",
- "libc",
-]
-
-[[package]]
 name = "nodrop"
 version = "0.1.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6076,7 +6064,7 @@ dependencies = [
  "futures-timer 3.0.2",
  "libc",
  "parity-scale-codec",
- "pin-project 1.0.4",
+ "pin-project 1.0.6",
  "polkadot-core-primitives",
  "polkadot-parachain",
  "rand 0.8.3",
@@ -6265,7 +6253,7 @@ name = "polkadot-parachain"
 version = "0.8.30"
 source = "git+https://github.com/paritytech/polkadot?branch=rococo-v1#8eb16510f9fbdd077d0ac3edf304591b8f689eab"
 dependencies = [
- "derive_more 0.99.11",
+ "derive_more 0.99.13",
  "parity-scale-codec",
  "parity-util-mem",
  "polkadot-core-primitives",
@@ -7515,7 +7503,7 @@ dependencies = [
  "hex-literal 0.2.1",
  "jsonrpc-core",
  "log",
- "nix 0.17.0",
+ "nix",
  "pallet-sudo",
  "parity-scale-codec",
  "parking_lot 0.9.0",
